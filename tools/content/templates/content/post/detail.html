@@ -1,0 +1,48 @@
+{% extends "content/base.html" %}
+
+{% block content %}
+    <main>
+        <section>
+            <h1>download from instagram</h1>
+            <form action="." method="post" novalidate>
+                <h2>photo/video/igtv/caption</h2>
+                <p>{{ form.url }}</p>
+                {% if form.url.errors %}
+                    <p class="form-error"><i class="fa fa-exclamation-triangle"></i>{{ form.url.errors|first }}</p>
+                {% endif %}
+                <p>{{ form.caption.label_tag }} {{ form.caption }}</p>
+                {% csrf_token %}
+                <button class="button get" type="submit">get data</button>
+            </form>
+            {% if errors %}
+                <p class="error"><i class="fa fa-exclamation-triangle error"></i>{{ errors }}</p>
+            {% endif %}
+        </section>
+
+        {% if post_content %}
+            <section>
+                <div class="content-flex">
+                    {% for type, display_url, download_url in post_content.urls %}
+                        <div class="content">
+                            <a href="{{ display_url }}" target="_blank">
+                                <img src="{{ display_url }}">
+                            </a>
+                            <a class="button save-sm" href="{{ download_url|add:'&dl=1' }}" download>download</a>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if post_content.text %}
+                    <div class="content-caption">
+                        <div class="caption">
+                            <p >{{ post_content.text|linebreaksbr }}</p>
+                        </div>
+                    </div>
+                {% endif %}
+                {% if post_content.zipfile_url %}
+                    <a class="button save" href="{{  post_content.zipfile_url }}" download>download  all (.zip)</a>
+                {% endif %}
+            </section>
+        {% endif %}
+
+    </main>
+{% endblock %}
